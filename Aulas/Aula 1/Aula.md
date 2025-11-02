@@ -73,7 +73,7 @@ class Program
         Console.WriteLine($"{inimigo.Nome} agora tem {inimigo.Vida} de vida.");
     }
 }
-
+```
 
 ## **Os Quatro Pilares da POO**
 
