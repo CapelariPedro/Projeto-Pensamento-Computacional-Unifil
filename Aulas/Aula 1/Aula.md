@@ -63,8 +63,248 @@ class Personagem
     }
 }
 
-// Exemplo de uso
-Personagem heroi = new Personagem("Herói", 100, 20);
-Personagem inimigo = new Personagem("Monstro", 80, 10);
+class Program
+{
+    static void Main(string[] args)
+    {
+        Personagem heroi = new Personagem("Herói", 100, 20);
+        Personagem inimigo = new Personagem("Monstro", 80, 10);
+        heroi.Atacar(inimigo);
+        Console.WriteLine($"{inimigo.Nome} agora tem {inimigo.Vida} de vida.");
+    }
+}
 
-heroi.Atacar(inimigo);
+
+## **Os Quatro Pilares da POO**
+
+A POO se sustenta sobre **quatro princípios fundamentais**, que garantem a modularidade, reutilização e organização do código.
+
+---
+
+### **1. Encapsulamento**
+
+#### Definição
+Encapsulamento é o princípio que **protege os dados internos de um objeto**, permitindo o acesso apenas por meio de **métodos controlados**.  
+Isso garante que partes externas do código não modifiquem diretamente informações sensíveis, mantendo a integridade do objeto.
+
+#### Exemplo na temática de jogos:
+Imagine um jogo de luta. Um personagem possui um atributo `vida`.  
+Se qualquer parte do código pudesse alterar livremente esse valor, o jogo seria instável.  
+Com o encapsulamento, usamos **métodos públicos de controle** para alterar a vida — como `ReceberDano()` e `Curar()`.
+
+#### Exemplo em C#:
+```csharp
+class Personagem
+{
+    private int vida = 100; // atributo protegido
+
+    public void ReceberDano(int dano)
+    {
+        vida -= dano;
+        if (vida < 0) vida = 0;
+        Console.WriteLine($"O personagem recebeu {dano} de dano. Vida atual: {vida}");
+    }
+
+    public void Curar(int valor)
+    {
+        vida += valor;
+        if (vida > 100) vida = 100;
+        Console.WriteLine($"O personagem se curou. Vida atual: {vida}");
+    }
+}
+```
+
+---
+
+### **2. Herança**
+
+#### Definição
+A **herança** permite que uma classe **filha** herde atributos e métodos de uma **classe pai**, promovendo **reutilização de código** e **padronização de comportamentos**.
+
+#### Exemplo na temática de jogos:
+No desenvolvimento de um jogo, podemos ter uma classe genérica `Personagem`, e dela derivar classes específicas como `Heroi` e `Inimigo`, herdando atributos comuns como `Vida` e `Forca`.
+
+#### Exemplo em C#:
+```csharp
+class Personagem
+{
+    public string Nome;
+    public int Vida;
+
+    public void Mover()
+    {
+        Console.WriteLine($"{Nome} está se movendo...");
+    }
+}
+
+class Heroi : Personagem
+{
+    public void Atacar()
+    {
+        Console.WriteLine($"{Nome} atacou o inimigo!");
+    }
+}
+
+class Inimigo : Personagem
+{
+    public void Rugir()
+    {
+        Console.WriteLine($"{Nome} soltou um rugido feroz!");
+    }
+}
+```
+
+
+---
+
+### **3. Polimorfismo**
+
+#### Definição
+O **polimorfismo** permite que diferentes classes tenham **métodos com o mesmo nome**, mas com **comportamentos distintos**.  
+É o princípio que possibilita criar sistemas flexíveis e adaptáveis, especialmente em jogos com múltiplos tipos de personagens.
+
+#### Exemplo na temática de jogos:
+Em um RPG, tanto o **Herói** quanto o **Inimigo** possuem o método `Atacar()`, porém cada um executa o ataque de maneira diferente.
+
+#### Exemplo em C#:
+```csharp
+class Personagem
+{
+    public virtual void Atacar()
+    {
+        Console.WriteLine("O personagem atacou de forma genérica.");
+    }
+}
+
+class Heroi : Personagem
+{
+    public override void Atacar()
+    {
+        Console.WriteLine("O herói atacou com uma espada!");
+    }
+}
+
+class Inimigo : Personagem
+{
+    public override void Atacar()
+    {
+        Console.WriteLine("O inimigo atacou com garras afiadas!");
+    }
+}
+```
+
+
+---
+
+### **4. Abstração**
+
+#### Definição
+A **abstração** consiste em **esconder detalhes complexos** e **expor apenas o que é relevante**.  
+Ela permite modelar objetos de forma simplificada, focando nas ações e características essenciais para o funcionamento do jogo.
+
+#### Exemplo na temática de jogos:
+Podemos criar uma **classe abstrata** chamada `Personagem` que define o que todos os personagens devem ter (por exemplo, `Atacar()` e `Mover()`), mas deixa os detalhes de implementação para as subclasses (`Heroi`, `Inimigo`, etc.).
+
+#### Exemplo em C#:
+```csharp
+abstract class Personagem
+{
+    public string Nome;
+    public int Vida;
+
+    public abstract void Atacar(); // método abstrato
+
+    public void Mover()
+    {
+        Console.WriteLine($"{Nome} se moveu para uma nova posição.");
+    }
+}
+
+class Mago : Personagem
+{
+    public override void Atacar()
+    {
+        Console.WriteLine($"{Nome} lançou uma bola de fogo!");
+    }
+}
+
+class Arqueiro : Personagem
+{
+    public override void Atacar()
+    {
+        Console.WriteLine($"{Nome} disparou uma flecha!");
+    }
+}
+```
+
+
+---
+
+##**Exemplo Completo Integrando os 4 Pilares**
+
+```csharp
+abstract class Personagem
+{
+    protected int vida;
+    public string Nome { get; set; }
+
+    public Personagem(string nome, int vida)
+    {
+        Nome = nome;
+        this.vida = vida;
+    }
+
+    public abstract void Atacar(Personagem alvo);
+
+    public void ReceberDano(int dano)
+    {
+        vida -= dano;
+        if (vida < 0) vida = 0;
+        Console.WriteLine($"{Nome} recebeu {dano} de dano. Vida atual: {vida}");
+    }
+}
+
+class Guerreiro : Personagem
+{
+    public int Forca { get; set; }
+
+    public Guerreiro(string nome, int vida, int forca) : base(nome, vida)
+    {
+        Forca = forca;
+    }
+
+    public override void Atacar(Personagem alvo)
+    {
+        Console.WriteLine($"{Nome} golpeou {alvo.Nome} com {Forca} de força!");
+        alvo.ReceberDano(Forca);
+    }
+}
+
+class Mago : Personagem
+{
+    public int PoderMagico { get; set; }
+
+    public Mago(string nome, int vida, int poderMagico) : base(nome, vida)
+    {
+        PoderMagico = poderMagico;
+    }
+
+    public override void Atacar(Personagem alvo)
+    {
+        Console.WriteLine($"{Nome} lançou um feitiço em {alvo.Nome} causando {PoderMagico} de dano mágico!");
+        alvo.ReceberDano(PoderMagico);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Guerreiro heroi = new Guerreiro("Arthas", 100, 20);
+        Mago inimigo = new Mago("Kel'Thuzad", 80, 25);
+
+        heroi.Atacar(inimigo);
+        inimigo.Atacar(heroi);
+    }
+}
+```
